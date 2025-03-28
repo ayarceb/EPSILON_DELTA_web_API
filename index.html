@@ -1,129 +1,143 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang=\"en\">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TROPOMI NO2 Satellite Data Monitoring</title>
+  <meta charset=\"UTF-8\">
+  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+  <title>TROPOMI NO2 Satellite Monitoring App</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       color: #333;
-      background-color: #f5f5f5;
+      background-color: #fafafa;
       margin: 0;
       padding: 0;
-      line-height: 1.6;
     }
     header {
-      background-color: #111;
+      background-color: #222;
       color: #fff;
-      padding: 20px;
+      padding: 15px;
       text-align: center;
       position: relative;
     }
     header img.logo {
-      height: 60px;
+      height: 50px;
       position: absolute;
-      left: 20px;
+      left: 15px;
       top: 10px;
     }
     nav {
-      margin-top: 10px;
+      margin-top: 8px;
     }
     nav a {
-      color: #ddd;
-      margin: 0 15px;
+      color: #bbb;
+      margin: 0 10px;
       text-decoration: none;
-      font-weight: bold;
+      font-size: 14px;
     }
     nav a:hover {
       color: #fff;
     }
     section {
-      padding: 20px;
-      max-width: 1200px;
+      padding: 15px;
+      max-width: 1100px;
       margin: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
     }
-    h2 {
-      border-bottom: 2px solid #ccc;
-      padding-bottom: 5px;
-      margin-bottom: 20px;
-    }
-    .gallery img, video {
-      max-width: 100%;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-    }
-    .center {
+    .card {
+      background-color: #fff;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       text-align: center;
+    }
+    .card img, .card video {
+      max-width: 100%;
+      border-radius: 5px;
+      margin-bottom: 10px;
     }
     footer {
-      background-color: #111;
-      color: #ddd;
+      background-color: #222;
+      color: #ccc;
       text-align: center;
-      padding: 15px;
-      margin-top: 20px;
+      padding: 10px;
+      font-size: 13px;
     }
-    .contact-btn {
-      background-color: #444;
+    .btn {
+      background-color: #333;
       color: white;
       border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
+      padding: 8px 15px;
+      border-radius: 4px;
       cursor: pointer;
+      font-size: 14px;
     }
-    .contact-btn:hover {
+    .btn:hover {
       background-color: #555;
+    }
+    h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
-
 <header>
-  <img src="LOGO.png" alt="Logo" class="logo">
-  <h1>TROPOMI NO<sub>2</sub> Satellite Monitoring</h1>
+  <img src=\"LOGO.png\" alt=\"Logo\" class=\"logo\">
+  <h1>TROPOMI NO<sub>2</sub> Satellite Monitoring App</h1>
   <nav>
-    <a href="#about">About</a>
-    <a href="#data">Data & Methods</a>
-    <a href="#gallery">Gallery</a>
-    <a href="#contact">Contact Us</a>
+    <a href=\"#about\">About</a>
+    <a href=\"#services\">Consultancy Services</a>
+    <a href=\"#data\">Data & Methods</a>
+    <a href=\"#contact\">Contact</a>
   </nav>
 </header>
 
-<section id="about">
-  <h2>Environmental Monitoring & Satellite Observations</h2>
-  <p>We utilize TROPOMI satellite data to monitor atmospheric NO<sub>2</sub> and other pollutants, supporting environmental assessments and decision-making globally.</p>
-  <img src="Canarias.gif" alt="Satellite Animation">
-</section>
+<section>
+  <div class=\"card\">
+    <h2>Satellite Observations</h2>
+    <img src=\"Canarias.gif\" alt=\"Satellite Animation\">
+  </div>
 
-<section id="data">
-  <h2>Emission Estimation & Data Assimilation Capabilities</h2>
-  <p>Our work involves emission estimation using advanced data assimilation and lightweight methods integrated into Chemical Transport Models. These tools enable precise monitoring and forecasting of air quality.</p>
-  <div class="gallery center">
-    <img src="preview_observations_Colombia.png" alt="Observations in Colombia">
-    <img src="preview_prior_emissions_Colombia.png" alt="Prior Emissions in Colombia">
+  <div class=\"card\">
+    <h2>Consultancy Services</h2>
+    <p>Specialized monitoring of refineries globally, enhancing environmental compliance and decision-making processes.</p>
+  </div>
+
+  <div class=\"card\">
+    <h2>Emission Estimation</h2>
+    <p>Integration of emission estimation using Data Assimilation and lightweight methods, including the AWS LOTOS-EUROS system.</p>
+    <a href=\"https://lotos-euros.tno.nl/\" target=\"_blank\" class=\"btn\">Learn More</a>
+  </div>
+
+  <div class=\"card\">
+    <h2>Colombia Observations</h2>
+    <img src=\"preview_observations_Colombia.png\" alt=\"Observations Colombia\">
+  </div>
+
+  <div class=\"card\">
+    <h2>Prior Emissions Colombia</h2>
+    <img src=\"preview_prior_emissions_Colombia.png\" alt=\"Prior Emissions Colombia\">
+  </div>
+
+  <div class=\"card\">
+    <h2>3D SO<sub>2</sub> Visualization</h2>
     <video controls>
-      <source src="so2 in LE_LOTOS_MEX_conc-3d_20160813.mp4" type="video/mp4">
-      Your browser does not support the video tag.
+      <source src=\"so2 in LE_LOTOS_MEX_conc-3d_20160813.mp4\" type=\"video/mp4\">
     </video>
   </div>
 </section>
 
-<section id="gallery">
-  <h2>Monitoring Specific Locations Around the World</h2>
-  <p>Through satellite data analysis, we offer precise environmental monitoring services for targeted locations, enhancing the ability to respond proactively to ecological challenges.</p>
-</section>
-
-<section id="contact" class="center">
+<section id=\"contact\" class=\"card\">
   <h2>Contact Us</h2>
-  <p>Interested in collaboration or have questions?</p>
-  <button class="contact-btn" onclick="window.location.href='mailto:your.email@example.com'">Email Us</button>
+  <button class=\"btn\" onclick=\"window.location.href='mailto:your.email@example.com'\">Email Now</button>
   <br><br>
-  <img src="LOGO.png" alt="Logo" height="50">
+  <img src=\"LOGO.png\" alt=\"Logo\" height=\"40\">
 </section>
 
 <footer>
-  &copy; 2025 EPSILON DELTA - Atmospheric Data Monitoring
+  &copy; 2025 EPSILON DELTA - Satellite Data & Environmental Monitoring
 </footer>
 
 </body>
