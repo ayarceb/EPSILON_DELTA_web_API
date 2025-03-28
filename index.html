@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TROPOMI NO2 Satellite Monitoring App</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -56,6 +57,7 @@
       max-width: 100%;
       border-radius: 5px;
       margin-bottom: 10px;
+      cursor: pointer;
     }
     footer {
       background-color: #222;
@@ -80,6 +82,13 @@
       font-size: 18px;
       margin-bottom: 10px;
     }
+    .announce {
+      background-color: #444;
+      color: white;
+      padding: 8px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
@@ -97,12 +106,12 @@
 <section>
   <div class="card">
     <h2>Satellite Observations</h2>
-    <img src="Canarias.gif" alt="Satellite Animation">
+    <a href="Canarias.gif" data-lightbox="image"><img src="Canarias.gif" alt="Satellite Animation"></a>
   </div>
 
   <div class="card">
     <h2>Consultancy Services</h2>
-    <p>Specialized monitoring of refineries globally, enhancing environmental compliance and decision-making processes.</p>
+    <p>Monitoring refineries, pig/chicken farms, emission estimation, plume transport and deposition impacts, air quality (NOx, NH3), and nitrogen impact.</p>
   </div>
 
   <div class="card">
@@ -111,14 +120,18 @@
     <a href="https://lotos-euros.tno.nl/" target="_blank" class="btn">Learn More</a>
   </div>
 
+  <div class="card announce">
+    <strong>Low-Cost Sensor Networks + Data Assimilation Integrated Systems</strong>
+  </div>
+
   <div class="card">
     <h2>Colombia Observations</h2>
-    <img src="preview_observations_Colombia.png" alt="Observations Colombia">
+    <a href="preview_observations_Colombia.png" data-lightbox="image"><img src="preview_observations_Colombia.png" alt="Observations Colombia"></a>
   </div>
 
   <div class="card">
     <h2>Prior Emissions Colombia</h2>
-    <img src="preview_prior_emissions_Colombia.png" alt="Prior Emissions Colombia">
+    <a href="preview_prior_emissions_Colombia.png" data-lightbox="image"><img src="preview_prior_emissions_Colombia.png" alt="Prior Emissions Colombia"></a>
   </div>
 
   <div class="card">
@@ -126,6 +139,11 @@
     <video controls>
       <source src="so2%20in%20LE_LOTOS_MEX_conc-3d_20160813.mp4" type="video/mp4">
     </video>
+  </div>
+
+  <div class="card">
+    <h2>SO<sub>2</sub> Gulf Observations</h2>
+    <a href="SO2_gulf.png" data-lightbox="image"><img src="SO2_gulf.png" alt="SO2 Gulf Observations"></a>
   </div>
 </section>
 
@@ -140,5 +158,6 @@
   &copy; 2025 EPSILON DELTA - Satellite Data & Environmental Monitoring
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
 </body>
 </html>
