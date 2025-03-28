@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TROPOMI NO2 Satellite Monitoring App</title>
+  <!-- Lightbox CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
   <style>
     body {
@@ -53,7 +54,7 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       text-align: center;
     }
-    .card img, .card video {
+    .card img {
       max-width: 100%;
       border-radius: 5px;
       margin-bottom: 10px;
@@ -89,6 +90,40 @@
       border-radius: 4px;
       margin-bottom: 10px;
     }
+    /* Modal overlay for video */
+    .video-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .video-container {
+      position: relative;
+      width: 80%;
+      max-width: 800px;
+    }
+    .video-container video {
+      width: 100%;
+      height: auto;
+      border-radius: 5px;
+    }
+    .close-btn {
+      position: absolute;
+      top: -30px;
+      right: 0;
+      background-color: #000;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
@@ -104,43 +139,61 @@
 </header>
 
 <section>
-  <div class="card">
+  <!-- About Card -->
+  <div class="card" id="about">
     <h2>Satellite Observations</h2>
     <a href="Canarias.gif" data-lightbox="image"><img src="Canarias.gif" alt="Satellite Animation"></a>
+    <p>Explore our TROPOMI-based observations:
+      <a href="https://sentinels.copernicus.eu/web/sentinel/missions/sentinel-5p" target="_blank">Visit the TROPOMI webpage</a>
+    </p>
   </div>
 
-  <div class="card">
+  <!-- Consultancy Services Card -->
+  <div class="card" id="services">
     <h2>Consultancy Services</h2>
-    <p>Monitoring refineries, pig/chicken farms, emission estimation, plume transport and deposition impacts, air quality (NOx, NH3), and nitrogen impact.</p>
+    <p>
+      Monitoring refineries, pig/chicken farms, emission estimation, plume transport and deposition impacts, air quality (NOx, NH3), and nitrogen impact.
+      <br>Low-Cost Sensor Networks + Data Assimilation Integrated Systems
+    </p>
   </div>
 
-  <div class="card">
+  <!-- Emission Estimation Card -->
+  <div class="card" id="data">
     <h2>Emission Estimation</h2>
     <p>Integration of emission estimation using Data Assimilation and lightweight methods, including the AWS LOTOS-EUROS system.</p>
-    <a href="https://lotos-euros.tno.nl/" target="_blank" class="btn">Learn More</a>
+    <a href="https://lotos-euros.tno.nl/" target="_blank" class="btn">TNO LOTOS-EUROS</a>
+    <br><br>
+    <a href="http://imimodel.org" target="_blank" class="btn">IMI System</a>
   </div>
 
+  <!-- Announcement -->
   <div class="card announce">
-    <strong>Low-Cost Sensor Networks + Data Assimilation Integrated Systems</strong>
+    <strong>Enhance Monitoring with Data Assimilation Tools</strong>
   </div>
 
+  <!-- Colombia Observations Card -->
   <div class="card">
     <h2>Colombia Observations</h2>
     <a href="preview_observations_Colombia.png" data-lightbox="image"><img src="preview_observations_Colombia.png" alt="Observations Colombia"></a>
   </div>
 
+  <!-- Prior Emissions Card -->
   <div class="card">
     <h2>Prior Emissions Colombia</h2>
     <a href="preview_prior_emissions_Colombia.png" data-lightbox="image"><img src="preview_prior_emissions_Colombia.png" alt="Prior Emissions Colombia"></a>
   </div>
 
+  <!-- 3D SO2 Visualization Card -->
   <div class="card">
     <h2>3D SO<sub>2</sub> Visualization</h2>
-    <video controls>
-      <source src="so2%20in%20LE_LOTOS_MEX_conc-3d_20160813.mp4" type="video/mp4">
-    </video>
+    <img src="preview_prior_emissions_Colombia.png" alt="Placeholder" style="display:none;"/>
+    <img src="so2.png" alt="Placeholder" style="display:none;"/>
+    <!-- Thumbnail or poster for the video -->
+    <img src="LOGO.png" alt="Video Thumbnail" style="width:100px;" onclick="openVideoModal()">
+    <p>Click thumbnail to watch the video.</p>
   </div>
 
+  <!-- SO2 Gulf Observations Card -->
   <div class="card">
     <h2>SO<sub>2</sub> Gulf Observations</h2>
     <a href="SO2_gulf.png" data-lightbox="image"><img src="SO2_gulf.png" alt="SO2 Gulf Observations"></a>
@@ -158,6 +211,27 @@
   &copy; 2025 EPSILON DELTA - Satellite Data & Environmental Monitoring
 </footer>
 
+<!-- Video Modal Overlay -->
+<div class="video-overlay" id="videoOverlay">
+  <div class="video-container">
+    <button class="close-btn" onclick="closeVideoModal()">X</button>
+    <video controls>
+      <source src="so2%20in%20LE_LOTOS_MEX_conc-3d_20160813.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+</div>
+
+<!-- Lightbox JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+<script>
+  function openVideoModal() {
+    document.getElementById('videoOverlay').style.display = 'flex';
+  }
+  function closeVideoModal() {
+    document.getElementById('videoOverlay').style.display = 'none';
+  }
+</script>
+
 </body>
 </html>
