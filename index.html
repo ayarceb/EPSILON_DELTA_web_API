@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GIF Button App</title>
+  <style>
+    body { text-align: center; font-family: Arial, sans-serif; padding-top: 50px; }
+    button { padding: 15px 30px; font-size: 16px; cursor: pointer; }
+    img { margin-top: 20px; max-width: 90%; height: auto; display: none; }
+  </style>
+</head>
+<body>
+  <button onclick="showGif()">Click to Show GIF</button>
+  <br>
+  <img id="myGif" src="Canarias.gif" alt="GIF Image">
+
+  <script>
+    function showGif() {
+      document.getElementById('myGif').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
