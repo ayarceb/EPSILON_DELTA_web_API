@@ -3,71 +3,129 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Canarias GIF Button</title>
+  <title>TROPOMI NO2 Satellite Data Monitoring</title>
   <style>
-    body { 
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
+    body {
       font-family: Arial, sans-serif;
-      background-color: #f8f8f8;
+      color: #333;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
     }
-
-    button {
-      padding: 12px 24px;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 8px;
-      border: none;
-      background-color: #007BFF;
-      color: white;
+    header {
+      background-color: #111;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      position: relative;
     }
-
-    img {
-      margin-top: 20px;
-      max-width: 90%;
-      height: auto;
-      display: none; /* initially hidden */
+    header img.logo {
+      height: 60px;
+      position: absolute;
+      left: 20px;
+      top: 10px;
+    }
+    nav {
+      margin-top: 10px;
+    }
+    nav a {
+      color: #ddd;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav a:hover {
+      color: #fff;
+    }
+    section {
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+    h2 {
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 5px;
+      margin-bottom: 20px;
+    }
+    .gallery img, video {
+      max-width: 100%;
       border-radius: 8px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .center {
+      text-align: center;
+    }
+    footer {
+      background-color: #111;
+      color: #ddd;
+      text-align: center;
+      padding: 15px;
+      margin-top: 20px;
+    }
+    .contact-btn {
+      background-color: #444;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .contact-btn:hover {
+      background-color: #555;
     }
   </style>
 </head>
 <body>
-  <button onclick="showGif()">Show Canarias GIF</button>
-  <img id="canariasGif" src="Canarias.gif" alt="Canarias GIF">
 
-  <script>
-    function showGif() {
-      document.getElementById('canariasGif').style.display = 'block';
-    }
-  </script>
+<header>
+  <img src="LOGO.png" alt="Logo" class="logo">
+  <h1>TROPOMI NO<sub>2</sub> Satellite Monitoring</h1>
+  <nav>
+    <a href="#about">About</a>
+    <a href="#data">Data & Methods</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#contact">Contact Us</a>
+  </nav>
+</header>
+
+<section id="about">
+  <h2>Environmental Monitoring & Satellite Observations</h2>
+  <p>We utilize TROPOMI satellite data to monitor atmospheric NO<sub>2</sub> and other pollutants, supporting environmental assessments and decision-making globally.</p>
+  <img src="Canarias.gif" alt="Satellite Animation">
+</section>
+
+<section id="data">
+  <h2>Emission Estimation & Data Assimilation Capabilities</h2>
+  <p>Our work involves emission estimation using advanced data assimilation and lightweight methods integrated into Chemical Transport Models. These tools enable precise monitoring and forecasting of air quality.</p>
+  <div class="gallery center">
+    <img src="preview_observations_Colombia.png" alt="Observations in Colombia">
+    <img src="preview_prior_emissions_Colombia.png" alt="Prior Emissions in Colombia">
+    <video controls>
+      <source src="so2 in LE_LOTOS_MEX_conc-3d_20160813.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+</section>
+
+<section id="gallery">
+  <h2>Monitoring Specific Locations Around the World</h2>
+  <p>Through satellite data analysis, we offer precise environmental monitoring services for targeted locations, enhancing the ability to respond proactively to ecological challenges.</p>
+</section>
+
+<section id="contact" class="center">
+  <h2>Contact Us</h2>
+  <p>Interested in collaboration or have questions?</p>
+  <button class="contact-btn" onclick="window.location.href='mailto:your.email@example.com'">Email Us</button>
+  <br><br>
+  <img src="LOGO.png" alt="Logo" height="50">
+</section>
+
+<footer>
+  &copy; 2025 EPSILON DELTA - Atmospheric Data Monitoring
+</footer>
+
 </body>
 </html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GIF Button App</title>
-  <style>
-    body { text-align: center; font-family: Arial, sans-serif; padding-top: 50px; }
-    button { padding: 15px 30px; font-size: 16px; cursor: pointer; }
-    img { margin-top: 20px; max-width: 90%; height: auto; display: none; }
-  </style>
-</head>
-<body>
-  <button onclick="showGif()">Click to Show GIF</button>
-  <br>
-  <img id="myGif" src="Canarias.gif" alt="GIF Image">
 
-  <script>
-    function showGif() {
-      document.getElementById('myGif').style.display = 'block';
-    }
-  </script>
-</body>
-</html>
