@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TROPOMI NO2 Satellite Monitoring App</title>
+  <title>Environmental Consultancy Services of EPSILON DELTA Consultancy Group</title>
   <!-- Lightbox CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
   <style>
@@ -124,12 +124,23 @@
       cursor: pointer;
       font-size: 16px;
     }
+    /* Additional styling for Spanish text cards */
+    .values-list {
+      text-align: left;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .values-list h3 {
+      margin-top: 10px;
+      margin-bottom: 5px;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
 <header>
   <img src="LOGO.png" alt="Logo" class="logo">
-  <h1>TROPOMI NO<sub>2</sub> Satellite Monitoring App</h1>
+  <h1>Environmental Consultancy Services of EPSILON DELTA Consultancy Group</h1>
   <nav>
     <a href="#about">About</a>
     <a href="#services">Consultancy Services</a>
@@ -166,6 +177,25 @@
     <a href="http://imimodel.org" target="_blank" class="btn">IMI System</a>
   </div>
 
+  <!-- Company Values Card (Spanish text in English) -->
+  <div class="card values-list">
+    <h2>Our Commitment</h2>
+    <h3>Orientación al cliente</h3>
+    <p>Nos comprometemos a comprender y atender las necesidades de nuestros clientes, ofreciendo soluciones que generen valor real para su negocio.</p>
+
+    <h3>Innovación y tecnología</h3>
+    <p>Apostamos por la innovación constante y el uso de tecnología avanzada para transformar datos en estrategias accionables que impulsen el éxito empresarial.</p>
+
+    <h3>Excelencia y Calidad</h3>
+    <p>Buscamos la excelencia en cada proyecto, asegurando soluciones de alta calidad que optimicen procesos y maximicen resultados.</p>
+
+    <h3>Compromiso con Sostenibilidad</h3>
+    <p>Creemos en el crecimiento sostenible y en el impacto positivo de nuestras soluciones en la sociedad y el medio ambiente.</p>
+
+    <h3>Adaptabilidad y Aprendizaje Continuo</h3>
+    <p>Nos mantenemos en constante evolución, adaptándonos a los cambios del mercado y aprendiendo de cada desafío para mejorar continuamente.</p>
+  </div>
+
   <!-- Announcement -->
   <div class="card announce">
     <strong>Enhance Monitoring with Data Assimilation Tools</strong>
@@ -186,9 +216,7 @@
   <!-- 3D SO2 Visualization Card -->
   <div class="card">
     <h2>3D SO<sub>2</sub> Visualization</h2>
-    <img src="preview_prior_emissions_Colombia.png" alt="Placeholder" style="display:none;"/>
-    <img src="so2.png" alt="Placeholder" style="display:none;"/>
-    <!-- Thumbnail or poster for the video -->
+    <!-- Video Thumbnail to open modal -->
     <img src="LOGO.png" alt="Video Thumbnail" style="width:100px;" onclick="openVideoModal()">
     <p>Click thumbnail to watch the video.</p>
   </div>
