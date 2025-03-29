@@ -4,219 +4,126 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EPSILON DELTA Consulting: Environmental Consultancy Branch</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <!-- Lightbox CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      color: #333;
-      background-color: #fafafa;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background-color: #222;
-      color: #fff;
-      padding: 15px;
-      text-align: center;
-      position: relative;
-    }
-    header img.logo {
-      height: 50px;
-      position: absolute;
-      left: 15px;
-      top: 10px;
-    }
-    nav {
-      margin-top: 8px;
-    }
-    nav a {
-      color: #bbb;
-      margin: 0 10px;
-      text-decoration: none;
-      font-size: 14px;
-    }
-    nav a:hover {
-      color: #fff;
-    }
-    section {
-      padding: 15px;
-      max-width: 1100px;
-      margin: auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 15px;
-    }
-    .card {
-      background-color: #fff;
-      padding: 10px;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-    .card img {
-      max-width: 100%;
-      border-radius: 5px;
-      margin-bottom: 10px;
-      cursor: pointer;
-    }
-    footer {
-      background-color: #222;
-      color: #ccc;
-      text-align: center;
-      padding: 10px;
-      font-size: 13px;
-    }
-    .btn {
-      background-color: #333;
-      color: white;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    .btn:hover {
-      background-color: #555;
-    }
-    h2 {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-    .announce {
-      background-color: #444;
-      color: white;
-      padding: 8px;
-      border-radius: 4px;
-      margin-bottom: 10px;
-    }
-    /* Modal overlay for video */
-    .video-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-    }
-    .video-container {
-      position: relative;
-      width: 80%;
-      max-width: 800px;
-    }
-    .video-container video {
-      width: 100%;
-      height: auto;
-      border-radius: 5px;
-    }
-    .close-btn {
-      position: absolute;
-      top: -30px;
-      right: 0;
-      background-color: #000;
-      color: #fff;
-      border: none;
-      padding: 5px 10px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-  </style>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <img src="LOGO.png" alt="Logo" class="logo">
-  <h1>Environmental Consultancy Services of EPSILON DELTA Consultancy Group</h1>
+<header id="header">
+  <img src="LOGO.png" alt="EPSILON DELTA Logo" class="logo">
+  <h1>Environmental Consultancy Services of EPSILON DELTA</h1>
   <nav>
-    <a href="#about">About</a>
-    <a href="#services">Consultancy Services</a>
-    <a href="#data">Data & Methods</a>
-    <a href="#contact">Contact</a>
+    <a href="#about" class="nav-link">About</a>
+    <a href="#services" class="nav-link">Services</a>
+    <a href="#data" class="nav-link">Data & Methods</a>
+    <a href="#observations" class="nav-link">Observations</a>
+    <a href="#contact" class="nav-link">Contact</a>
   </nav>
 </header>
 
-<section>
-  <!-- About Card -->
-  <div class="card" id="about">
-    <h2>Satellite Observations</h2>
-    <a href="Canarias.gif" data-lightbox="image"><img src="Canarias.gif" alt="Satellite Animation"></a>
-    <p>Explore our TROPOMI-based observations:
-      <a href="https://sentinels.copernicus.eu/web/sentinel/missions/sentinel-5p" target="_blank">Visit the TROPOMI webpage</a>
-    </p>
-  </div>
+<main>
+  <!-- About Section -->
+  <section id="about">
+    <div class="card">
+      <h2>Satellite Observations</h2>
+      <a href="Canarias.gif" data-lightbox="satellite" data-title="Satellite Animation of Canary Islands">
+        <img src="Canarias.gif" alt="Satellite Animation" loading="lazy">
+      </a>
+      <p>Explore our cutting-edge TROPOMI-based observations for environmental monitoring and analysis.</p>
+      <a href="https://sentinels.copernicus.eu/web/sentinel/missions/sentinel-5p" target="_blank" class="btn">Learn More About TROPOMI</a>
+    </div>
+  </section>
 
-  <!-- Consultancy Services Card -->
-  <div class="card" id="services">
-    <h2>Consultancy Services</h2>
-    <p>
-      Monitoring refineries, pig/chicken farms, emission estimation, plume transport and deposition impacts, air quality (NOx, NH3), and nitrogen impact.
-      <br>Low-Cost Sensor Networks + Data Assimilation Integrated Systems
-    </p>
-  </div>
+  <!-- Services Section -->
+  <section id="services">
+    <div class="card">
+      <h2>Our Consultancy Services</h2>
+      <ul>
+        <li>Environmental monitoring of industrial facilities</li>
+        <li>Emission estimation and impact assessment</li>
+        <li>Air quality analysis (NOx, NH3)</li>
+        <li>Plume transport and deposition modeling</li>
+        <li>Low-Cost Sensor Networks implementation</li>
+        <li>Data Assimilation Integrated Systems</li>
+      </ul>
+    </div>
+  </section>
 
-  <!-- Emission Estimation Card -->
-  <div class="card" id="data">
-    <h2>Emission Estimation</h2>
-    <p>Integration of emission estimation using Data Assimilation and lightweight methods, including the AWS LOTOS-EUROS system.</p>
-    <a href="https://lotos-euros.tno.nl/" target="_blank" class="btn">TNO LOTOS-EUROS</a>
-    <br><br>
-    <a href="https://carboninversion.com/" target="_blank" class="btn">IMI System</a>
-  </div>
+  <!-- Data & Methods Section -->
+  <section id="data">
+    <div class="card">
+      <h2>Emission Estimation Methods</h2>
+      <p>We integrate state-of-the-art emission estimation using Data Assimilation and lightweight methods, powered by the AWS LOTOS-EUROS system.</p>
+      <div class="button-group">
+        <a href="https://lotos-euros.tno.nl/" target="_blank" class="btn">TNO LOTOS-EUROS</a>
+        <a href="https://carboninversion.com/" target="_blank" class="btn">IMI System</a>
+      </div>
+    </div>
 
-  <!-- Announcement Card with Data Assimilation Image -->
-  <div class="card announce">
-    <strong>Enhance Monitoring with Data Assimilation Tools</strong>
-    <br>
-    <a href="Data_Asimm_system.png" data-lightbox="image">
-      <img src="Data_Asimm_system.png" alt="Data Assimilation System" style="margin-top:10px; max-width:100%; border-radius:5px;">
-    </a>
-  </div>
+    <div class="card announce">
+      <h2>Data Assimilation Tools</h2>
+      <a href="Data_Asimm_system.png" data-lightbox="data" data-title="Our Data Assimilation System">
+        <img src="Data_Asimm_system.png" alt="Data Assimilation System" loading="lazy">
+      </a>
+    </div>
+  </section>
 
-  <!-- Colombia Observations Card -->
-  <div class="card">
-    <h2>Colombia Observations</h2>
-    <a href="preview_observations_Colombia.png" data-lightbox="image"><img src="preview_observations_Colombia.png" alt="Observations Colombia"></a>
-  </div>
+  <!-- Observations Section -->
+  <section id="observations">
+    <div class="card">
+      <h2>Colombia Observations</h2>
+      <a href="preview_observations_Colombia.png" data-lightbox="colombia" data-title="Satellite Observations in Colombia">
+        <img src="preview_observations_Colombia.png" alt="Observations Colombia" loading="lazy">
+      </a>
+    </div>
 
-  <!-- Prior Emissions Card -->
-  <div class="card">
-    <h2>Prior Emissions Colombia</h2>
-    <a href="preview_prior_emissions_Colombia.png" data-lightbox="image"><img src="preview_prior_emissions_Colombia.png" alt="Prior Emissions Colombia"></a>
-  </div>
+    <div class="card">
+      <h2>Prior Emissions Colombia</h2>
+      <a href="preview_prior_emissions_Colombia.png" data-lightbox="colombia" data-title="Prior Emissions Data for Colombia">
+        <img src="preview_prior_emissions_Colombia.png" alt="Prior Emissions Colombia" loading="lazy">
+      </a>
+    </div>
 
-  <!-- 3D SO2 Visualization Card -->
-  <div class="card">
-    <h2>3D SO<sub>2</sub> Visualization</h2>
-    <!-- Video Thumbnail to open modal -->
-    <img src="LOGO.png" alt="Video Thumbnail" style="width:100px;" onclick="openVideoModal()">
-    <p>Click thumbnail to watch the video.</p>
-  </div>
+    <div class="card">
+      <h2>SO₂ Visualization</h2>
+      <div class="video-preview" onclick="openVideoModal()">
+        <img src="LOGO.png" alt="Video Thumbnail" class="video-thumb">
+        <div class="play-button">▶</div>
+      </div>
+    </div>
 
-  <!-- SO2 Gulf Observations Card -->
-  <div class="card">
-    <h2>SO<sub>2</sub> Gulf Observations</h2>
-    <a href="SO2_gulf.png" data-lightbox="image"><img src="SO2_gulf.png" alt="SO2 Gulf Observations"></a>
-  </div>
-</section>
+    <div class="card">
+      <h2>SO₂ Gulf Observations</h2>
+      <a href="SO2_gulf.png" data-lightbox="gulf" data-title="SO₂ Observations in the Gulf Region">
+        <img src="SO2_gulf.png" alt="SO2 Gulf Observations" loading="lazy">
+      </a>
+    </div>
+  </section>
 
-<section id="contact" class="card">
-  <h2>Contact Us</h2>
-  <button class="btn" onclick="window.location.href='mailto:your.email@example.com'">Email Now</button>
-  <br><br>
-  <img src="LOGO.png" alt="Logo" height="40">
-</section>
+  <!-- Contact Section -->
+  <section id="contact">
+    <div class="card">
+      <h2>Get in Touch</h2>
+      <p>Ready to enhance your environmental monitoring? Contact our team of experts today.</p>
+      <a href="mailto:contact@epsilondelta.com" class="btn">Email Us</a>
+      <img src="LOGO.png" alt="EPSILON DELTA Logo" class="footer-logo">
+    </div>
+  </section>
+</main>
 
 <footer>
-  &copy; 2025 EPSILON DELTA - Satellite Data & Environmental Monitoring
+  <p>&copy; 2025 EPSILON DELTA - Leading Innovation in Environmental Monitoring</p>
 </footer>
 
-<!-- Video Modal Overlay -->
+<!-- Video Modal -->
 <div class="video-overlay" id="videoOverlay">
   <div class="video-container">
-    <button class="close-btn" onclick="closeVideoModal()">X</button>
+    <button class="close-btn" onclick="closeVideoModal()">×</button>
     <video controls>
       <source src="so2%20in%20LE_LOTOS_MEX_conc-3d_20160813.mp4" type="video/mp4">
       Your browser does not support the video tag.
@@ -224,15 +131,74 @@
   </div>
 </div>
 
-<!-- Lightbox JS -->
+<!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
 <script>
-  function openVideoModal() {
-    document.getElementById('videoOverlay').style.display = 'flex';
+// Sticky Header
+window.addEventListener('scroll', () => {
+  const header = document.getElementById('header');
+  if (window.scrollY > 100) {
+    header.classList.add('scrolled');
+  } else {
+    header.classList.remove('scrolled');
   }
-  function closeVideoModal() {
-    document.getElementById('videoOverlay').style.display = 'none';
+});
+
+// Active Navigation Link
+const navLinks = document.querySelectorAll('.nav-link');
+const sections = document.querySelectorAll('section');
+
+function setActiveLink() {
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    if (window.scrollY >= sectionTop - 150) {
+      current = section.getAttribute('id');
+    }
+  });
+
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href').slice(1) === current) {
+      link.classList.add('active');
+    }
+  });
+}
+
+window.addEventListener('scroll', setActiveLink);
+
+// Video Modal
+function openVideoModal() {
+  document.getElementById('videoOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeVideoModal() {
+  const overlay = document.getElementById('videoOverlay');
+  const video = overlay.querySelector('video');
+  overlay.style.display = 'none';
+  video.pause();
+  document.body.style.overflow = 'auto';
+}
+
+// Close modal on overlay click
+document.getElementById('videoOverlay').addEventListener('click', (e) => {
+  if (e.target.classList.contains('video-overlay')) {
+    closeVideoModal();
   }
+});
+
+// Prevent video click from closing modal
+document.querySelector('.video-container').addEventListener('click', (e) => {
+  e.stopPropagation();
+});
+
+// Initialize Lightbox
+lightbox.option({
+  'resizeDuration': 200,
+  'wrapAround': true,
+  'fadeDuration': 300
+});
 </script>
 
 </body>
