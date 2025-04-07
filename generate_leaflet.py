@@ -1,11 +1,18 @@
-def generate_leaflet_html(filename="leaflet_hpc_estimate.html"):
-    # HPC cost factor from reference domain
-    cost_factor = 4 / 272_000_000  # ~1.47e-8 CPU-hrs/cell/day
+def generate_leaflet_html(filename="leaflet_hpc_estimate_10km.html"):
+    """
+    This script derives the HPC usage from a reference simulation:
+    - 10 km resolution domain over Colombia (~2.72 million cells).
+    - 8 cores, 30 minutes for 1 day => 4 CPU-hrs/day total.
+    => HPC factor = 4 / 2.72e6 = ~1.47e-6 CPU-hrs/cell/day.
+    """
+
+    # Corrected HPC cost factor for 10 km resolution
+    cost_factor = 4 / 2_720_000  # ~1.47e-6 CPU-hrs/cell/day
 
     html_content = f"""<!DOCTYPE html>
 <html>
 <head>
-  <title>Draw Bounding Box & HPC Estimate</title>
+  <title>Draw Bounding Box & HPC Estimate (10 km)</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -96,10 +103,11 @@ def generate_leaflet_html(filename="leaflet_hpc_estimate.html"):
   // We'll track our bounding box so we can remove it before drawing a new one
   var boundingBoxLayer = null;
 
-  // 1 km resolution = ~0.001 degrees (rough approximation)
-  var resolutionDeg = 0.001;
+  // For 10 km resolution, about 0.01 degrees
+  var resolutionDeg = 0.01;
 
-  // HPC cost factor (CPU-hours per cell per day), from your reference domain
+  // HPC cost factor (CPU-hours per cell per day),
+  // derived from reference 10 km run
   var costFactor = {cost_factor};
 
   function drawAndCalculate() {{
@@ -135,7 +143,7 @@ def generate_leaflet_html(filename="leaflet_hpc_estimate.html"):
     // Zoom the map to this bounding box
     map.fitBounds(bounds);
 
-    // Calculate how many squares of ~1 km in each dimension
+    // Calculate how many squares of ~10 km (0.01 deg) in each dimension
     var deltaLat = Math.abs(north - south);
     var deltaLon = Math.abs(east - west);
 
@@ -143,10 +151,12 @@ def generate_leaflet_html(filename="leaflet_hpc_estimate.html"):
     var squaresLon = Math.floor(deltaLon / resolutionDeg);
     var totalCells = squaresLat * squaresLon;
 
-    // HPC cost for 1 day: totalCells * costFactor
-    var totalCPUHours = totalCells * costFactor * days;
+    // HPC cost for 1 day
+    var totalCPUHours_1day = totalCells * costFactor;
+    // HPC cost for 'days' days
+    var totalCPUHours = totalCPUHours_1day * days;
 
-    // Wall-clock time if using 'cores' in parallel
+    // Wall-clock time if using 'cores'
     var totalWallTimeHours = totalCPUHours / cores;
     var totalWallTimeMinutes = Math.floor(totalWallTimeHours * 60);
     var hh = Math.floor(totalWallTimeMinutes / 60);
@@ -154,12 +164,12 @@ def generate_leaflet_html(filename="leaflet_hpc_estimate.html"):
 
     // Show info to user
     var infoDiv = document.getElementById('info');
-    infoDiv.innerHTML =
+    infoDiv.innerHTML = 
       'Grid size: ' + squaresLat + ' × ' + squaresLon +
-      ' = ' + totalCells + ' cells (at ~1 km).';
+      ' = ' + totalCells + ' cells (at ~10 km).';
 
     var infoHPCDiv = document.getElementById('info-hpc');
-    infoHPCDiv.innerHTML =
+    infoHPCDiv.innerHTML = 
       'Estimated HPC usage: ' + totalCPUHours.toFixed(2) + ' CPU-hrs total ' +
       '(for ' + days + ' day(s)).<br>' +
       'Estimated wall-clock time on ' + cores + ' core(s): ' +
@@ -169,7 +179,7 @@ def generate_leaflet_html(filename="leaflet_hpc_estimate.html"):
   // Listen for the button click
   document.getElementById('draw-btn').addEventListener('click', drawAndCalculate);
 
-  // Optionally, draw on page load
+  // Calculate on page load
   drawAndCalculate();
 </script>
 
@@ -180,9 +190,8 @@ def generate_leaflet_html(filename="leaflet_hpc_estimate.html"):
     with open(filename, "w", encoding="utf-8") as f:
         f.write(html_content)
 
-    print("HTML file generated: " + filename)
+    print(f"HTML file generated: {filename}")
     print("Open this file in your browser to test it.")
-
 
 if __name__ == "__main__":
     generate_leaflet_html()

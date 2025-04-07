@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Draw Bounding Box & HPC Estimate</title>
+  <title>Draw Bounding Box & HPC Estimate (10 km)</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -92,11 +92,12 @@
   // We'll track our bounding box so we can remove it before drawing a new one
   var boundingBoxLayer = null;
 
-  // 1 km resolution = ~0.001 degrees (rough approximation)
-  var resolutionDeg = 0.001;
+  // For 10 km resolution, about 0.01 degrees
+  var resolutionDeg = 0.01;
 
-  // HPC cost factor (CPU-hours per cell per day), from your reference domain
-  var costFactor = 1.4705882352941177e-08;
+  // HPC cost factor (CPU-hours per cell per day),
+  // derived from reference 10 km run
+  var costFactor = 1.4705882352941177e-06;
 
   function drawAndCalculate() {
     var north = parseFloat(document.getElementById('input-north').value);
@@ -131,7 +132,7 @@
     // Zoom the map to this bounding box
     map.fitBounds(bounds);
 
-    // Calculate how many squares of ~1 km in each dimension
+    // Calculate how many squares of ~10 km (0.01 deg) in each dimension
     var deltaLat = Math.abs(north - south);
     var deltaLon = Math.abs(east - west);
 
@@ -139,10 +140,12 @@
     var squaresLon = Math.floor(deltaLon / resolutionDeg);
     var totalCells = squaresLat * squaresLon;
 
-    // HPC cost for 1 day: totalCells * costFactor
-    var totalCPUHours = totalCells * costFactor * days;
+    // HPC cost for 1 day
+    var totalCPUHours_1day = totalCells * costFactor;
+    // HPC cost for 'days' days
+    var totalCPUHours = totalCPUHours_1day * days;
 
-    // Wall-clock time if using 'cores' in parallel
+    // Wall-clock time if using 'cores'
     var totalWallTimeHours = totalCPUHours / cores;
     var totalWallTimeMinutes = Math.floor(totalWallTimeHours * 60);
     var hh = Math.floor(totalWallTimeMinutes / 60);
@@ -150,12 +153,12 @@
 
     // Show info to user
     var infoDiv = document.getElementById('info');
-    infoDiv.innerHTML =
+    infoDiv.innerHTML = 
       'Grid size: ' + squaresLat + ' × ' + squaresLon +
-      ' = ' + totalCells + ' cells (at ~1 km).';
+      ' = ' + totalCells + ' cells (at ~10 km).';
 
     var infoHPCDiv = document.getElementById('info-hpc');
-    infoHPCDiv.innerHTML =
+    infoHPCDiv.innerHTML = 
       'Estimated HPC usage: ' + totalCPUHours.toFixed(2) + ' CPU-hrs total ' +
       '(for ' + days + ' day(s)).<br>' +
       'Estimated wall-clock time on ' + cores + ' core(s): ' +
@@ -165,7 +168,7 @@
   // Listen for the button click
   document.getElementById('draw-btn').addEventListener('click', drawAndCalculate);
 
-  // Optionally, draw on page load
+  // Calculate on page load
   drawAndCalculate();
 </script>
 
