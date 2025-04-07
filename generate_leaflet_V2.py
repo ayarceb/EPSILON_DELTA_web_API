@@ -1,40 +1,28 @@
-import math
-
-def generate_leaflet_html(filename="leaflet_hpc_refined.html"):
+def generate_leaflet_html(filename="simple_piecewise_hpc.html"):
     """
-    We fit a power-law cost factor(N) = a*N^b using two references:
-      1) 'Large domain at 10 km' => 2.72e6 cells => 1.47e-6 CPU-hrs/cell/day
-      2) 'Medellin at 1 km'     => 1.0e6 cells   => 2.4e-5  CPU-hrs/cell/day
+    Generates an HTML page that uses a *very simplified* piecewise + linear
+    interpolation between two known HPC reference points:
+      1) Big domain (2.72e6 cells) => 4 CPU-hrs/day
+      2) Small domain (1.0e6 cells) => 24 CPU-hrs/day
 
-    Then HPC for 1 day => N * costFactor(N).
-    We'll let the user choose bounding box and resolution, then compute N.
+    HPC_1day(N):
+      If N <= 1e6:
+          HPC_1day(N) = 24 * (N / 1e6)
+      If N >= 2.72e6:
+          HPC_1day(N) = 4 * (N / 2.72e6)
+      If 1e6 < N < 2.72e6:
+          linear interpolation from (1e6 => 24) to (2.72e6 => 4)
+    Then HPC_total = HPC_1day(N) * (days)
+    Wall time = HPC_total / (cores)
+
+    VERY approximate, but ensures smaller domain doesn't exceed big domain time.
     """
 
-    # --- 1) Fit power law from the two references
-    N1 = 2.72e6
-    cf1 = 1.47e-6   # CPU-hrs/cell/day
-    N2 = 1.0e6
-    cf2 = 2.4e-5    # CPU-hrs/cell/day
-
-    lnN1 = math.log(N1)
-    lnCF1 = math.log(cf1)
-    lnN2 = math.log(N2)
-    lnCF2 = math.log(cf2)
-
-    b = (lnCF2 - lnCF1) / (lnN2 - lnN1)
-    a = math.exp(lnCF1 - b*lnN1)
-
-    # We'll embed these into the HTML/JS.
-    # (We want them as text so the browser can do the exponent.)
-    a_str = f"{a:.9g}"
-    b_str = f"{b:.9g}"
-
-    # The HTML
-    html_content = f"""<!DOCTYPE html>
+    html_content = r"""<!DOCTYPE html>
 <html>
 <head>
-  <title>Refined HPC Estimate (Two References)</title>
-  <meta charset="utf-8" />
+  <title>Simple Piecewise HPC Estimate</title>
+  <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Leaflet CSS -->
@@ -43,38 +31,30 @@ def generate_leaflet_html(filename="leaflet_hpc_refined.html"):
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
-    html, body {{
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      width: 100%;
+    html, body {
+      margin: 0; padding: 0;
+      width: 100%; height: 100%;
       font-family: sans-serif;
-    }}
-    #controls {{
-      padding: 10px;
+    }
+    #controls {
       background: #f2f2f2;
-    }}
-    #map {{
-      height: calc(100% - 210px);
+      padding: 10px;
+    }
+    .label-input {
+      margin-right: 10px;
+    }
+    #map {
       width: 100%;
-    }}
-    .label-input {{
-      margin-right: 15px;
-    }}
-    input {{
-      width: 70px;
-    }}
-    #info {{
+      height: calc(100% - 170px);
+    }
+    #info {
       margin: 5px 0;
       font-weight: bold;
-    }}
-    #info-details {{
+    }
+    #info-details {
       color: #555;
       font-size: 0.9em;
-    }}
-    .highlight {{
-      color: #0055cc;
-    }}
+    }
   </style>
 </head>
 <body>
@@ -82,24 +62,24 @@ def generate_leaflet_html(filename="leaflet_hpc_refined.html"):
 <div id="controls">
   <label class="label-input">
     North:
-    <input id="input-north" type="text" value="7.0">
+    <input id="input-north" type="text" value="7">
   </label>
   <label class="label-input">
     South:
-    <input id="input-south" type="text" value="6.0">
+    <input id="input-south" type="text" value="6">
   </label>
   <label class="label-input">
     West:
-    <input id="input-west" type="text" value="-76.0">
+    <input id="input-west" type="text" value="-76">
   </label>
   <label class="label-input">
     East:
-    <input id="input-east" type="text" value="-75.0">
+    <input id="input-east" type="text" value="-75">
   </label>
   <br><br>
   <label class="label-input">
     Resolution (deg):
-    <input id="input-res" type="text" value="0.001">
+    <input id="input-res" type="text" value="0.01">
   </label>
   <label class="label-input">
     Days:
@@ -110,7 +90,7 @@ def generate_leaflet_html(filename="leaflet_hpc_refined.html"):
     <input id="input-cores" type="text" value="8">
   </label>
   <button id="draw-btn">Draw & Calculate</button>
-
+  
   <div id="info"></div>
   <div id="info-details"></div>
 </div>
@@ -118,126 +98,119 @@ def generate_leaflet_html(filename="leaflet_hpc_refined.html"):
 <div id="map"></div>
 
 <script>
-  // We'll store a, b from Python
-  const a = {a_str};
-  const b = {b_str};
+  // We'll implement the piecewise HPC logic in JavaScript.
 
-  // We'll parse user inputs, compute HPC usage
-  function computeHPC() {{
+  function piecewiseHPC_1day(N) {
+    // N = total number of cells
+    // 1) If N <= 1e6: HPC_1day(N) = 24 * (N / 1e6)
+    if (N <= 1e6) {
+      return 24.0 * (N / 1.0e6);
+    }
+    // 2) If N >= 2.72e6: HPC_1day(N) = 4 * (N / 2.72e6)
+    else if (N >= 2.72e6) {
+      return 4.0 * (N / 2.72e6);
+    }
+    // 3) If in between, linear interpolation from (1e6 => 24) to (2.72e6 => 4)
+    else {
+      let x1 = 1.0e6;    // domain size #1
+      let y1 = 24.0;     // HPC at #1
+      let x2 = 2.72e6;   // domain size #2
+      let y2 = 4.0;      // HPC at #2
+
+      // fraction between x1 and x2
+      let frac = (N - x1) / (x2 - x1);
+      return y1 + (y2 - y1)*frac;
+    }
+  }
+
+  // Leaflet map init
+  var map = L.map('map').setView([6.5, -75.5], 8); // near Medellín
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  let boundingBoxLayer = null;
+
+  function drawAndCalculate() {
     let north = parseFloat(document.getElementById('input-north').value);
     let south = parseFloat(document.getElementById('input-south').value);
     let west = parseFloat(document.getElementById('input-west').value);
     let east = parseFloat(document.getElementById('input-east').value);
     let resDeg = parseFloat(document.getElementById('input-res').value);
+
     let days = parseFloat(document.getElementById('input-days').value);
     let cores = parseFloat(document.getElementById('input-cores').value);
 
     if (
-      isNaN(north) || isNaN(south) || isNaN(west) || isNaN(east) || 
+      isNaN(north) || isNaN(south) || isNaN(west) || isNaN(east) ||
       isNaN(resDeg) || isNaN(days) || isNaN(cores) ||
       days <= 0 || cores <= 0 || resDeg <= 0
-    ) {{
-      alert('Please enter valid numeric coordinates, resolution, days, and cores (>0).');
-      return null;
-    }}
+    ) {
+      alert("Enter valid positive numeric values!");
+      return;
+    }
 
-    // # of cells in bounding box
-    let deltaLat = Math.abs(north - south);
-    let deltaLon = Math.abs(east - west);
+    // Compute bounding box cells:
+    let dLat = Math.abs(north - south);
+    let dLon = Math.abs(east - west);
 
-    let nLat = Math.floor(deltaLat / resDeg);
-    let nLon = Math.floor(deltaLon / resDeg);
+    let nLat = Math.floor(dLat / resDeg);
+    let nLon = Math.floor(dLon / resDeg);
     let totalCells = nLat * nLon;
 
-    // costFactor(N) = a * N^b
-    // HPC for 1 day = totalCells * costFactor(N)
-    // HPC for 'days' => times days
-    // Then wall time = HPC / cores
+    // HPC for 1 day in CPU-hrs
+    let hpc_1day = piecewiseHPC_1day(totalCells);
 
-    let costFactorN = a * Math.pow(totalCells, b);
-    let cpuHours_1day = totalCells * costFactorN;
-    let cpuHours_total = cpuHours_1day * days;
-    let wallTime_hrs = cpuHours_total / cores;
+    // HPC for all days
+    let hpc_total = hpc_1day * days;
 
-    // Convert to HH:MM
-    let totalMin = Math.floor(wallTime_hrs * 60);
-    let hh = Math.floor(totalMin / 60);
-    let mm = totalMin % 60;
-
-    return {{
-      totalCells,
-      costFactorN,
-      cpuHours_total,
-      days,
-      cores,
-      wallTime_hrs,
-      hh,
-      mm
-    }};
-  }}
-
-  // Create the Leaflet map
-  var map = L.map('map').setView([6.5, -75.5], 8); // near Medellín
-  L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
-    attribution: '&copy; OpenStreetMap contributors'
-  }}).addTo(map);
-
-  // We'll keep track of the bounding box layer
-  let boundingBoxLayer = null;
-
-  function drawAndCalculate() {{
-    let data = computeHPC();
-    if(!data) return;
-
-    let north = parseFloat(document.getElementById('input-north').value);
-    let south = parseFloat(document.getElementById('input-south').value);
-    let west = parseFloat(document.getElementById('input-west').value);
-    let east = parseFloat(document.getElementById('input-east').value);
+    // wall-clock hours
+    let wall_hours = hpc_total / cores;
+    let wall_minutes_total = Math.floor(wall_hours * 60);
+    let hh = Math.floor(wall_minutes_total / 60);
+    let mm = wall_minutes_total % 60;
 
     // Draw bounding box
-    if(boundingBoxLayer) {{
+    if (boundingBoxLayer) {
       map.removeLayer(boundingBoxLayer);
-    }}
+    }
     let bounds = [[south, west], [north, east]];
-    boundingBoxLayer = L.rectangle(bounds, {{
+    boundingBoxLayer = L.rectangle(bounds, {
       color: 'red',
       weight: 2,
       fill: false
-    }}).addTo(map);
-
-    // Fit map
+    }).addTo(map);
     map.fitBounds(bounds);
 
-    let infoDiv = document.getElementById('info');
-    let infoDetails = document.getElementById('info-details');
-
-    let c = data;
+    // Display info
+    let infoDiv = document.getElementById("info");
+    let detailsDiv = document.getElementById("info-details");
 
     infoDiv.innerHTML = 
-      'Cells: ' + c.totalCells.toLocaleString() + 
-      ', HPC cost factor(N) = ' + c.costFactorN.toExponential(2) + ' CPU-hrs/cell/day' +
-      '<br>Total CPU-hrs (for ' + c.days + ' day(s)): ' + c.cpuHours_total.toFixed(2);
+      "Grid size: " + nLat + " × " + nLon +
+      " = " + totalCells.toLocaleString() + " cells.<br>" +
+      "HPC for 1 day: " + hpc_1day.toFixed(2) + " CPU-hrs.";
 
-    infoDetails.innerHTML =
-      '<span class="highlight">Estimated wall time on ' + c.cores + 
-      ' cores:</span> ' + c.hh + 'h ' + c.mm + 'm';
-  }}
+    detailsDiv.innerHTML =
+      "Total HPC for " + days + " day(s): " + hpc_total.toFixed(2) + 
+      " CPU-hrs. <br>" +
+      "Wall time on " + cores + " cores: " + hh + " hr " + mm + " min.";
+  }
 
-  // Hook up the button
-  document.getElementById('draw-btn').addEventListener('click', drawAndCalculate);
+  document.getElementById("draw-btn").addEventListener("click", drawAndCalculate);
 
-  // Do an initial run
+  // Initial run
   drawAndCalculate();
 </script>
 
 </body>
 </html>
 """
+
     with open(filename, "w", encoding="utf-8") as f:
         f.write(html_content)
 
-    print(f"HTML file generated: {filename}")
-    print("Open this file in your browser to test it.")
+    print(f"HTML file generated: {filename}\nOpen it in your browser to test it!")
 
 if __name__ == "__main__":
     generate_leaflet_html()
