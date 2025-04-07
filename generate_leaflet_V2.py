@@ -1,4 +1,22 @@
-<!DOCTYPE html>
+def generate_leaflet_html(filename="leaflet_hpc_compare.html"):
+    """
+    Compare approximate HPC usage/time for a chosen bounding box
+    at both 10 km and 1 km resolution, anchored to the same reference domain.
+
+    Reference: 
+      - Domain ~2.72e6 cells at 10 km resolution (for Colombia).
+      - 8 cores, 30 minutes = 0.5 hours => 4 CPU-hrs total for 1 day.
+      => HPC factor (10 km) = 4 / 2.72e6 = ~1.47e-6 CPU-hrs/cell/day.
+      => HPC factor (1 km) ~ 1.47e-6 * 10,000 = 1.47e-2 CPU-hrs/cell/day 
+         (since 1 km has 100×100 more cells than 10 km for the same lat-lon box).
+    """
+
+    # HPC cost at 10 km resolution, from the reference
+    cost_factor_10km = 4.0 / 2_720_000  # ~1.47e-6 CPU-hrs/cell/day
+    # HPC cost at 1 km resolution is 10,000× larger (2D scaling)
+    cost_factor_1km = cost_factor_10km * 10_000
+
+    html_content = f"""<!DOCTYPE html>
 <html>
 <head>
   <title>Draw Bounding Box & HPC Compare (10 km vs. 1 km)</title>
@@ -11,37 +29,37 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
-    html, body {
+    html, body {{
       margin: 0;
       padding: 0;
       height: 100%;
       width: 100%;
       font-family: sans-serif;
-    }
-    #controls {
+    }}
+    #controls {{
       padding: 10px;
       background: #f2f2f2;
-    }
-    #map {
+    }}
+    #map {{
       height: calc(100% - 210px);
       width: 100%;
-    }
-    .label-input {
+    }}
+    .label-input {{
       margin-right: 15px;
-    }
-    input {
+    }}
+    input {{
       width: 80px;
-    }
-    #info-10km, #info-1km {
+    }}
+    #info-10km, #info-1km {{
       margin: 5px 0;
       font-weight: bold;
-    }
-    #info-10km {
+    }}
+    #info-10km {{
       color: #333;
-    }
-    #info-1km {
+    }}
+    #info-1km {{
       color: #0077cc; /* Just a different color for clarity */
-    }
+    }}
   </style>
 </head>
 <body>
@@ -85,9 +103,9 @@
   var map = L.map('map').setView([5, -74], 5);
 
   // Add basemap
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
     attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(map);
+  }}).addTo(map);
 
   // We'll track bounding box so we can remove it before drawing a new one
   var boundingBoxLayer = null;
@@ -98,10 +116,10 @@
   var resolutionDeg_1km = 0.001;
 
   // HPC cost factors (CPU-hrs/cell/day), from our Python constants
-  var costFactor_10km = 1.4705882352941177e-06;
-  var costFactor_1km = 0.014705882352941178;
+  var costFactor_10km = {cost_factor_10km};
+  var costFactor_1km = {cost_factor_1km};
 
-  function drawAndCalculate() {
+  function drawAndCalculate() {{
     var north = parseFloat(document.getElementById('input-north').value);
     var south = parseFloat(document.getElementById('input-south').value);
     var west = parseFloat(document.getElementById('input-west').value);
@@ -113,23 +131,23 @@
     if (
       isNaN(north) || isNaN(south) || isNaN(west) || isNaN(east)
       || isNaN(days) || isNaN(cores) || days <= 0 || cores <= 0
-    ) {
+    ) {{
       alert('Please enter valid numeric coordinates, days, and cores (all > 0).');
       return;
-    }
+    }}
 
     // Remove old bounding box if it exists
-    if (boundingBoxLayer) {
+    if (boundingBoxLayer) {{
       map.removeLayer(boundingBoxLayer);
-    }
+    }}
 
     // Create bounding box
     var bounds = [[south, west], [north, east]];
-    boundingBoxLayer = L.rectangle(bounds, {
+    boundingBoxLayer = L.rectangle(bounds, {{
       color: 'red',
       weight: 2,
       fill: false
-    }).addTo(map);
+    }}).addTo(map);
 
     // Zoom map to the bounding box
     map.fitBounds(bounds);
@@ -182,7 +200,7 @@
       'Grid: ' + squaresLat_1km + ' × ' + squaresLon_1km + ' = ' + totalCells_1km + ' cells. ' +
       'CPU-hrs: ' + totalCPUHours_1km.toFixed(2) + ' (for ' + days + ' day(s)). ' +
       'Wall time on ' + cores + ' core(s): ' + hh_1km + ' hr ' + mm_1km + ' min.';
-  }
+  }}
 
   // Click event
   document.getElementById('draw-btn').addEventListener('click', drawAndCalculate);
@@ -193,3 +211,13 @@
 
 </body>
 </html>
+"""
+
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write(html_content)
+
+    print(f"HTML file generated: {filename}")
+    print("Open this file in your browser to test it.")
+
+if __name__ == "__main__":
+    generate_leaflet_html()
