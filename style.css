@@ -521,16 +521,17 @@ footer {
   position: absolute;
   right: 20px;
   top: 20px;
-  background: linear-gradient(135deg, #FFD700, #FFC107);
+  background: linear-gradient(135deg, #FFD700, #FFC107); /* golden-yellow */
   color: #333;
   border: none;
-  padding: 10px 18px;
+  padding: 10px 20px;
   border-radius: 30px;
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
   transition: all 0.3s ease;
+  z-index: 2000;
 }
 
 .cloud-btn:hover {
