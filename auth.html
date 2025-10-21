@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Authenticate - LUWA Cloud</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    main { margin-top: 120px; padding: 2rem 1rem; text-align: center; }
+    .auth-card {
+      background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      max-width: 420px; margin: 2rem auto; padding: 2rem; text-align: left;
+    }
+    .auth-card label { display:block; margin-bottom: .5rem; font-weight:500; color:#333; }
+    .auth-card input {
+      width: 100%; padding: .7rem; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 6px;
+      font-size: 1rem; font-family: 'Inter', sans-serif;
+    }
+    .auth-card button {
+      width: 100%; background: linear-gradient(135deg, #007bff, #0056b3); color: #fff; border: none;
+      padding: 12px; border-radius: 6px; cursor: pointer; font-size: 1rem;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .auth-card button:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,123,255,.3); }
+    .msg { margin-top: .75rem; font-weight: 500; display:none; }
+    .msg.ok { color: #2e7d32; }
+    .msg.err { color: #c62828; }
+    .hint { margin-top: 1rem; font-size: .9rem; color: #666; }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="LOGO.png" alt="Logo" class="logo" />
+    <h1>Authenticate to LUWA Cloud</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="index.html#services">Services</a>
+      <a href="index.html#data">Data & Methods</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="auth-card">
+      <h2 style="margin-bottom:1rem;">Sign in</h2>
+      <label for="username">Username</label>
+      <input id="username" type="text" autocomplete="username" required />
+
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" required />
+
+      <button id="loginBtn">Connect</button>
+
+      <div id="okMsg" class="msg ok">Authenticated. Redirecting…</div>
+      <div id="errMsg" class="msg err">Authentication failed. Check credentials.</div>
+
+      <div class="hint">
+        This signs in to the LUWA Cloud API. After success, the session token is stored in your browser for subsequent calls.
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 LUWA - Satellite Data & Environmental Monitoring
+  </footer>
+
+  <script>
+    // ====== Configure your API base URL here ======
+    const API_BASE = "http://YOUR_EC2_PUBLIC_DNS_OR_IP:8000"; // e.g., http://ec2-xx-xx-xx-xx.compute.amazonaws.com:8000
+
+    const loginBtn = document.getElementById("loginBtn");
+    const okMsg = document.getElementById("okMsg");
+    const errMsg = document.getElementById("errMsg");
+
+    loginBtn.addEventListener("click", async () => {
+      okMsg.style.display = "none";
+      errMsg.style.display = "none";
+
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (!username || !password) {
+        errMsg.textContent = "Enter username and password.";
+        errMsg.style.display = "block";
+        return;
+      }
+
+      const form = new FormData();
+      form.append("username", username);
+      form.append("password", password);
+
+      try {
+        const resp = await fetch(`${API_BASE}/login`, { method: "POST", body: form });
+        if (!resp.ok) {
+          errMsg.textContent = "Authentication failed. Check credentials.";
+          errMsg.style.display = "block";
+          return;
+        }
+        const data = await resp.json();  // {auth:"ok", token:"..."}
+        // persist token for next pages
+        localStorage.setItem("luwa_token", data.token);
+
+        okMsg.style.display = "block";
+        // redirect after a short pause
+        setTimeout(() => {
+          window.location.href = "cloud.html"; // next step page
+        }, 800);
+      } catch (e) {
+        errMsg.textContent = "Connection error. Verify API URL.";
+        errMsg.style.display = "block";
+      }
+    });
+  </script>
+</body>
+</html>
