@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact - LUWA Consulting</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    main {
+      margin-top: 120px;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+
+    .contact-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      max-width: 500px;
+      margin: 2rem auto;
+      padding: 2rem;
+    }
+
+    .contact-form {
+      text-align: left;
+    }
+
+    .contact-form label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 0.7rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .contact-form button {
+      width: 100%;
+      background: linear-gradient(135deg, #007bff, #0056b3);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .contact-form button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,123,255,0.3);
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin-top: 2rem;
+      background: linear-gradient(135deg, #007bff, #0056b3);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,123,255,0.3);
+    }
+
+    .success-message {
+      display: none;
+      color: green;
+      margin-top: 1rem;
+      font-weight: 500;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <img src="LOGO.png" alt="Logo" class="logo">
+    <h1>Contact LUWA Consulting</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="index.html#services">Services</a>
+      <a href="index.html#data">Data & Methods</a>
+      <a href="contact.html" class="active">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="contact-card">
+      <h2>Send us a message</h2>
+      <form 
+        id="contactForm"
+        action="https://formspree.io/f/mqayonga" 
+        method="POST" 
+        class="contact-form"
+      >
+        <label for="name">Name:</label>
+        <input type="text" name="name" id="name" required>
+
+        <label for="email">Email:</label>
+        <input type="email" name="_replyto" id="email" required>
+
+        <label for="message">Message:</label>
+        <textarea name="message" id="message" rows="5" required></textarea>
+
+        <button type="submit">Send Message</button>
+        <p class="success-message" id="successMessage">✅ Message sent successfully!</p>
+      </form>
+
+      <a href="index.html" class="back-btn">← Back to Home</a>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 LUWA - Satellite Data & Environmental Monitoring
+  </footer>
+
+  <script>
+    // simple success message after form submit
+    const form = document.getElementById("contactForm");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const response = await fetch(form.action, {
+        method: form.method,
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (response.ok) {
+        document.getElementById("successMessage").style.display = "block";
+        form.reset();
+      }
+    });
+  </script>
+</body>
+</html>
