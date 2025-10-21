@@ -19,7 +19,7 @@ header {
   background-color: rgba(33, 37, 41, 0.95);
   color: #e9ecef; /* Light gray for header text */
   padding: 1rem;
-  position: fixed;
+  position: relative;
   width: 100%;
   top: 0;
   z-index: 1000;
