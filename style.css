@@ -517,3 +517,24 @@ footer {
     opacity: 1;
   }
 } 
+.cloud-btn {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  background: linear-gradient(135deg, #FFD700, #FFC107);
+  color: #333;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 30px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.cloud-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(255, 215, 0, 0.6);
+  background: linear-gradient(135deg, #FFE082, #FFD54F);
+}
