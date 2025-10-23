@@ -22,10 +22,6 @@
       transition: transform .2s ease, box-shadow .2s ease;
     }
     .auth-card button:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,123,255,.3); }
-    #domainBtn {
-      display:none; margin-top:1rem;
-      background: linear-gradient(135deg, #28a745, #1e7e34);
-    }
     .msg { margin-top: .75rem; font-weight: 500; display:none; }
     .msg.ok { color: #2e7d32; }
     .msg.err { color: #c62828; }
@@ -56,15 +52,12 @@
 
       <button id="loginBtn">Connect</button>
 
-      <div id="okMsg" class="msg ok">Authenticated. You can now select a domain.</div>
+      <div id="okMsg" class="msg ok">Authenticated. Redirecting…</div>
       <div id="errMsg" class="msg err">Authentication failed. Check credentials.</div>
 
       <div class="hint">
         This signs in to the LUWA Cloud API. After success, the session token is stored in your browser for subsequent calls.
       </div>
-
-      <!-- ✅ new button -->
-      <button id="domainBtn">Domain Selection</button>
     </div>
   </main>
 
@@ -73,10 +66,10 @@
   </footer>
 
   <script>
-    const API_BASE = "https://luwa-consultancy.duckdns.org";
+    // ====== Configure your API base URL here ======
+    const API_BASE = "https://luwa-consultancy.duckdns.org"; // e.g., http://ec2-xx-xx-xx-xx.compute.amazonaws.com:8000
 
     const loginBtn = document.getElementById("loginBtn");
-    const domainBtn = document.getElementById("domainBtn");
     const okMsg = document.getElementById("okMsg");
     const errMsg = document.getElementById("errMsg");
 
@@ -104,22 +97,54 @@
           errMsg.style.display = "block";
           return;
         }
-
         const data = await resp.json();  // {auth:"ok", token:"..."}
+        // persist token for next pages
         localStorage.setItem("luwa_token", data.token);
 
         okMsg.style.display = "block";
-        domainBtn.style.display = "block";  // ✅ show button after success
-
+        // redirect after a short pause
+        setTimeout(() => {
+          window.location.href = "cloud.html"; // next step page
+        }, 800);
       } catch (e) {
         errMsg.textContent = "Connection error. Verify API URL.";
         errMsg.style.display = "block";
       }
     });
-
-    domainBtn.addEventListener("click", () => {
-      window.location.href = "map.html";
-    });
   </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
