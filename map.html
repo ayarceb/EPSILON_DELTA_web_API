@@ -7,37 +7,62 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
   <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css"/>
   <style>
-    html, body, #map { height:100%; margin:0; }
+    body {
+      font-family: Arial, sans-serif;
+      background:#f4f6fa;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+      margin:0;
+    }
+    .map-card {
+      background:white;
+      border-radius:12px;
+      box-shadow:0 4px 20px rgba(0,0,0,0.1);
+      width:80vmin; height:80vmin;  /* square box */
+      position:relative;
+      overflow:hidden;
+    }
+    #map { width:100%; height:100%; border-radius:12px; }
     #saveButton, #backButton {
-      position:absolute; top:10px; z-index:1000; padding:10px 16px; border:none;
-      color:white; border-radius:6px; cursor:pointer; font-size:0.9rem;
+      position:absolute; top:10px; z-index:1000;
+      padding:10px 16px; border:none; color:white;
+      border-radius:6px; cursor:pointer; font-size:0.9rem;
     }
     #saveButton { right:10px; background:#28a745; }
     #backButton { left:10px; background:#007bff; }
   </style>
 </head>
 <body>
-  <div id="map"></div>
-  <button id="backButton">Back</button>
-  <button id="saveButton">Save Domain</button>
+  <div class="map-card">
+    <div id="map"></div>
+    <button id="backButton">Back</button>
+    <button id="saveButton">Save Domain</button>
+  </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
   <script>
     const token = localStorage.getItem("luwa_token");
-    if (!token) { window.location.href = "auth.html"; }
+    if (!token) window.location.href = "auth.html";
 
-    const map = L.map('map').setView([20,0], 2);
+    // --- initialize map ---
+    const map = L.map('map', {
+      center: [20,0],
+      zoom: 2,
+      worldCopyJump: false,
+      maxBounds: [[-90,-180],[90,180]],
+      maxBoundsViscosity: 1.0
+    });
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:8 }).addTo(map);
 
     const drawnItems = new L.FeatureGroup();
     map.addLayer(drawnItems);
 
     const drawControl = new L.Control.Draw({
-      draw: {
-        polygon:false, circle:false, marker:false,
-        polyline:false, circlemarker:false, rectangle:true
-      },
+      draw: { polygon:false, circle:false, marker:false, polyline:false, circlemarker:false, rectangle:true },
       edit: { featureGroup: drawnItems }
     });
     map.addControl(drawControl);
@@ -63,11 +88,8 @@
         body: `token=${token}&north=${north}&south=${south}&east=${east}&west=${west}`
       });
 
-      if (response.ok) {
-        alert("Domain saved successfully!");
-      } else {
-        alert("Error saving domain.");
-      }
+      if (response.ok) alert("Domain saved successfully!");
+      else alert("Error saving domain.");
     });
 
     document.getElementById("backButton").addEventListener("click", () => {
