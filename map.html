@@ -3,28 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Domain Selection - LUWA Cloud</title>
+  <title>LUWA Cloud – Domain & Simulation</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
   <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css"/>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: monospace;
       background:#f4f6fa;
       display:flex;
       height:100vh;
       margin:0;
     }
-    /* Left control panel */
-    .sidebar {
+    .sidebar, .rightbar {
       width:280px;
       background:white;
-      border-right:1px solid #ddd;
+      border:1px solid #ddd;
       padding:16px;
       display:flex;
       flex-direction:column;
       gap:12px;
       box-shadow:2px 0 6px rgba(0,0,0,0.05);
+      overflow:auto;
     }
+    .rightbar { border-left:1px solid #ddd; }
     .sidebar img {
       width:160px;
       align-self:center;
@@ -37,12 +38,14 @@
       font-size:0.9rem;
     }
     label { font-size:0.9rem; margin-top:8px; }
-    input[type="date"] {
+    input[type="date"], select {
       width:100%;
       padding:6px;
       border-radius:4px;
       border:1px solid #ccc;
+      font-family:monospace;
     }
+    input[type="range"] { width:100%; }
     button {
       padding:10px;
       border:none;
@@ -53,8 +56,8 @@
     }
     #saveButton { background:#28a745; }
     #backButton { background:#007bff; }
-
-    /* Map area */
+    #runButton { background:#d9534f; }
+    #stopButton { background:#6c757d; }
     .map-container {
       flex:1;
       display:flex;
@@ -72,24 +75,42 @@
       overflow:hidden;
     }
     #map { width:100%; height:100%; border-radius:12px; }
+    #terminal {
+      background:#000;
+      color:#0f0;
+      height:200px;
+      overflow:auto;
+      border-radius:6px;
+      padding:8px;
+      font-size:0.85rem;
+    }
+    .progress-bar {
+      width:100%;
+      background:#333;
+      border-radius:4px;
+      height:12px;
+      margin-top:6px;
+    }
+    .progress {
+      height:100%;
+      width:0%;
+      background:#00ff00;
+      border-radius:4px;
+    }
   </style>
 </head>
 <body>
   <!-- Left Panel -->
   <div class="sidebar">
     <img src="LOGO.png" alt="LUWA Logo">
-
     <div class="info-box">
       <strong>Selected Domain:</strong>
       <div id="domain-info">None</div>
     </div>
-
     <label for="init-date">Start date:</label>
     <input type="date" id="init-date">
-
     <label for="end-date">End date:</label>
     <input type="date" id="end-date">
-
     <button id="saveButton">Save Domain</button>
     <button id="backButton">Back</button>
   </div>
@@ -101,73 +122,119 @@
     </div>
   </div>
 
+  <!-- Right Panel -->
+  <div class="rightbar">
+    <label for="model-select">Model Name:</label>
+    <select id="model-select">
+      <option value="WRF">WRF</option>
+      <option value="ECMWF LOTOS-EUROS">ECMWF LOTOS-EUROS</option>
+      <option value="WRF LOTOS-EUROS">WRF LOTOS-EUROS</option>
+    </select>
+
+    <label for="nodes">Computation Nodes: <span id="nodes-value">4</span></label>
+    <input type="range" id="nodes" min="1" max="64" value="4" step="1">
+
+    <button id="runButton">RUN SIMULATION</button>
+    <button id="stopButton">STOP SIMULATION</button>
+
+    <div id="terminal">Waiting for simulation...</div>
+    <div class="progress-bar"><div class="progress" id="progress"></div></div>
+  </div>
+
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
   <script>
     const token = localStorage.getItem("luwa_token");
     if (!token) window.location.href = "auth.html";
 
-    // --- Initialize map ---
-    const map = L.map('map', {
-      center: [20, 0],
-      zoom: 2,
-      worldCopyJump: false,
-      maxBounds: [[-90, -180], [90, 180]],
-      maxBoundsViscosity: 1.0
+    const map = L.map('map', {center:[20,0], zoom:2});
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:8}).addTo(map);
+    const drawnItems = new L.FeatureGroup(); map.addLayer(drawnItems);
+    map.addControl(new L.Control.Draw({
+      draw:{polygon:false,circle:false,marker:false,polyline:false,circlemarker:false,rectangle:true},
+      edit:{featureGroup:drawnItems}
+    }));
+
+    let bounds=null;
+    map.on(L.Draw.Event.CREATED, e=>{
+      drawnItems.clearLayers(); drawnItems.addLayer(e.layer);
+      bounds=e.layer.getBounds();
+      const n=bounds.getNorth().toFixed(2), s=bounds.getSouth().toFixed(2),
+            e_=bounds.getEast().toFixed(2), w=bounds.getWest().toFixed(2);
+      document.getElementById("domain-info").textContent=`N:${n} S:${s} E:${e_} W:${w}`;
     });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 8
-    }).addTo(map);
+    // Update node label
+    const nodeSlider=document.getElementById("nodes");
+    nodeSlider.oninput=()=>document.getElementById("nodes-value").textContent=nodeSlider.value;
 
-    const drawnItems = new L.FeatureGroup();
-    map.addLayer(drawnItems);
+    document.getElementById("saveButton").addEventListener("click", async ()=>{
+      if(!bounds){alert("Select a rectangle first.");return;}
+      const north=bounds.getNorth(), south=bounds.getSouth(),
+            east=bounds.getEast(), west=bounds.getWest();
+      const init=document.getElementById("init-date").value;
+      const end=document.getElementById("end-date").value;
+      if(!init||!end){alert("Select both start and end dates.");return;}
 
-    const drawControl = new L.Control.Draw({
-      draw: { polygon:false, circle:false, marker:false, polyline:false, circlemarker:false, rectangle:true },
-      edit: { featureGroup: drawnItems }
-    });
-    map.addControl(drawControl);
-
-    let bounds = null;
-    map.on(L.Draw.Event.CREATED, e => {
-      drawnItems.clearLayers();
-      drawnItems.addLayer(e.layer);
-      bounds = e.layer.getBounds();
-
-      const n = bounds.getNorth().toFixed(2);
-      const s = bounds.getSouth().toFixed(2);
-      const e_ = bounds.getEast().toFixed(2);
-      const w = bounds.getWest().toFixed(2);
-      document.getElementById("domain-info").textContent = `N:${n} S:${s} E:${e_} W:${w}`;
-    });
-
-    document.getElementById("saveButton").addEventListener("click", async () => {
-      if (!bounds) { alert("Select a rectangle first."); return; }
-
-      const north = bounds.getNorth();
-      const south = bounds.getSouth();
-      const east  = bounds.getEast();
-      const west  = bounds.getWest();
-
-      const init_date = document.getElementById("init-date").value;
-      const end_date  = document.getElementById("end-date").value;
-
-      if (!init_date || !end_date) { alert("Select both start and end dates."); return; }
-
-      const response = await fetch("https://luwa-consultancy.duckdns.org/save_domain", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `token=${token}&north=${north}&south=${south}&east=${east}&west=${west}&init_date=${init_date}&end_date=${end_date}`
+      const form=new URLSearchParams();
+      form.append("token",token);
+      form.append("north",north); form.append("south",south);
+      form.append("east",east); form.append("west",west);
+      form.append("init_date",init); form.append("end_date",end);
+      await fetch("https://luwa-consultancy.duckdns.org/save_domain",{
+        method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:form
       });
-
-      if (response.ok) alert("Domain and dates saved successfully!");
-      else alert("Error saving domain.");
+      alert("Domain and dates saved successfully!");
     });
 
-    document.getElementById("backButton").addEventListener("click", () => {
-      window.location.href = "cloud.html";
+    // -------- Simulation mimic --------
+    let running=false, intervalId=null, progress=0;
+    const term=document.getElementById("terminal");
+    const bar=document.getElementById("progress");
+
+    function log(line){
+      term.textContent+=`\n${line}`;
+      term.scrollTop=term.scrollHeight;
+    }
+
+    document.getElementById("runButton").addEventListener("click",()=>{
+      if(!bounds){alert("Define a domain first.");return;}
+      if(running){return;}
+      running=true; progress=0; bar.style.width="0%";
+      term.textContent="Initializing simulation...\n";
+      const model=document.getElementById("model-select").value;
+      const nodes=nodeSlider.value;
+      const n=bounds.getNorth().toFixed(2), s=bounds.getSouth().toFixed(2),
+            e_=bounds.getEast().toFixed(2), w=bounds.getWest().toFixed(2);
+
+      log(`Good morning user.`);
+      log(`Model selected: ${model}`);
+      log(`Running with ${nodes} computation nodes.`);
+      log(`Region coordinates -> N:${n} S:${s} E:${e_} W:${w}`);
+      log(`Authenticating with AWS cluster...`);
+      log(`Compiling model components...`);
+
+      intervalId=setInterval(()=>{
+        if(progress>=100){
+          log("Simulation complete. Output saved to AWS bucket /results.");
+          clearInterval(intervalId); running=false;
+        }else{
+          progress+=2;
+          bar.style.width=progress+"%";
+          if(progress%10===0) log(`Progress: ${progress}%`);
+        }
+      },200);
     });
+
+    document.getElementById("stopButton").addEventListener("click",()=>{
+      if(running){
+        clearInterval(intervalId);
+        running=false;
+        log("Simulation aborted by user.");
+      }
+    });
+
+    document.getElementById("backButton").addEventListener("click",()=>window.location.href="cloud.html");
   </script>
 </body>
 </html>
